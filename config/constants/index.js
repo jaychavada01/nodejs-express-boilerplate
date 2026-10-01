@@ -50,17 +50,17 @@ const SORT_BY_FIELD = {
 };
 
 const QUEUE_NAMES = {
-  NOTIFICATIONS: "swp.notifications.queue",
-  EMAILS: "swp.emails.queue",
-  EVENTS: "swp.events.queue",
+  NOTIFICATIONS: "app.notifications.queue",
+  EMAILS: "app.emails.queue",
+  EVENTS: "app.events.queue",
 };
 
 const EXCHANGES = {
-  NOTIFICATIONS_DLX: "swp.notifications.dlx.exchange",
+  NOTIFICATIONS_DLX: "app.notifications.dlx.exchange",
 };
 
 const DLQ_NAMES = {
-  NOTIFICATIONS_DLQ: "swp.notifications.dlq",
+  NOTIFICATIONS_DLQ: "app.notifications.dlq",
 };
 
 const STORAGE_PROVIDERS = {

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   app:
     build: .
-    container_name: swp_boilerplate_app
+    container_name: boilerplate_app
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -11,7 +11,7 @@ services:
       - PORT=3000
       - NODE_ENV=development
       - DB_ADAPTER=postgres
-      - DB_URL=postgres://postgres:postgres@postgres:5432/swp_boilerplate_db
+      - DB_URL=postgres://postgres:postgres@postgres:5432/boilerplate_db
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
     depends_on:
       - postgres
@@ -19,12 +19,12 @@ services:
 
   postgres:
     image: postgres:15-alpine
-    container_name: swp_boilerplate_postgres
+    container_name: boilerplate_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: swp_boilerplate_db
+      POSTGRES_DB: boilerplate_db
     ports:
       - "5432:5432"
     volumes:
@@ -32,7 +32,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
-    container_name: swp_boilerplate_rabbitmq
+    container_name: boilerplate_rabbitmq
     restart: unless-stopped
     ports:
       - "5672:5672"

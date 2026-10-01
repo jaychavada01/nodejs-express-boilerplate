@@ -1,7 +1,7 @@
 -- =============================================================================
 -- Migration: Create Sample Table
 -- Date: 2026-09-30
--- Description: Creates the initial sample table matching SWP model structure
+-- Description: Creates the initial sample table matching model structure
 -- =============================================================================
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

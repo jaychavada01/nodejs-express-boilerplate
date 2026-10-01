@@ -1,6 +1,6 @@
 # Node.js Express Microservice Boilerplate
 
-A production-grade, highly modular boilerplate for building scalable Node.js microservices. Strictly built according to SWP backend architecture conventions and developer standards defined in [`.agents/AGENTS.md`](.agents/AGENTS.md).
+A production-grade, highly modular boilerplate for building scalable Node.js microservices. Strictly built according to backend architecture conventions and developer standards defined in [`.agents/AGENTS.md`](.agents/AGENTS.md).
 
 Built with **Express 5**, **Sequelize ORM (PostgreSQL)**, **RabbitMQ messaging (with Dead-Letter Queues)**, **SendGrid email service (with Handlebars templates)**, and **Firebase Cloud Messaging (FCM) push notifications**.
 

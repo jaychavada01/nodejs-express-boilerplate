@@ -8,7 +8,7 @@ const envConfig = {
   FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:3000",
 
   DATABASE: {
-    URL: process.env.DB_URL || "postgres://postgres:postgres@localhost:5432/swp_boilerplate_db",
+    URL: process.env.DB_URL || "postgres://postgres:postgres@localhost:5432/boilerplate_db",
     POOL: {
       MAX: Number(process.env.DB_POOL_MAX) || 20,
       MIN: Number(process.env.DB_POOL_MIN) || 0,
