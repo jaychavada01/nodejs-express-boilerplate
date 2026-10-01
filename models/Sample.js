@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes } = require("../config/packages");
 const { sequelize } = require("../config/sequelize");
 const { models } = require("../config/models");
 const { STATUS_TYPES } = require("../config/constants");

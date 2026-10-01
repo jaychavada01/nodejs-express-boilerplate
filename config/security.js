@@ -1,4 +1,4 @@
-const helmet = require("helmet");
+const { HELMET } = require("./packages");
 const envConfig = require("./envConfig");
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
       "x-auth",
     ],
   },
-  helmet: helmet({
+  helmet: HELMET({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],

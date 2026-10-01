@@ -1,17 +1,17 @@
-// ── 1. Load environment variables ──────────────────────────────────────────
-require("dotenv").config({ quiet: true });
-
-const express = require("express");
-const cors = require("cors");
-const { createServer } = require("http");
+const { DOTENV, EXPRESS: express, CORS: cors, HTTP: { createServer } } = require("./config/packages");
+DOTENV.config({ quiet: true });
 
 const envConfig = require("./config/envConfig");
 const { cors: corsConfig, helmet: helmetConfig } = require("./config/security");
+const requestId = require("./api/middlewares/requestId");
+const maintenanceMiddleware = require("./api/middlewares/maintenance");
 const rateLimiter = require("./api/middlewares/rateLimiter");
 const errorHandler = require("./api/middlewares/errorHandler");
 const router = require("./config/routes");
 const { sequelize } = require("./config/sequelize");
 const { checkDatabaseConnection } = require("./config/database");
+const { initCron, stopCron } = require("./config/cron");
+const { closeRedis } = require("./config/redis");
 const { startServer } = require("./api/utils/server");
 const { NOT_FOUND_RESPONSE } = require("./api/utils/response");
 
@@ -19,7 +19,7 @@ const PORT = envConfig.PORT || 3000;
 
 /*
  * ANSI COLOR LOGGING MIDDLEWARE
- * Logs request method, URL, status code (color-coded), and execution duration in ms.
+ * Logs request method, URL, status code (color-coded), correlation ID, and execution duration in ms.
  */
 function setupRequestLogging(app) {
   app.use((req, res, next) => {
@@ -30,6 +30,7 @@ function setupRequestLogging(app) {
       const method = req.method;
       const url = req.originalUrl || req.url;
       const duration = Date.now() - start;
+      const reqId = req.id ? `[${req.id}] ` : "";
 
       const resetColor = "\x1b[0m";
       const grayColor = "\x1b[90m";
@@ -44,7 +45,7 @@ function setupRequestLogging(app) {
       }
 
       console.log(
-        `${method} ${url} ${statusColor}${status}${resetColor} - ${grayColor}${duration}ms${resetColor}`
+        `${grayColor}${reqId}${resetColor}${method} ${url} ${statusColor}${status}${resetColor} - ${grayColor}${duration}ms${resetColor}`
       );
     });
 
@@ -53,9 +54,11 @@ function setupRequestLogging(app) {
 }
 
 /**
- * Configure security and rate limiting middlewares.
+ * Configure security, correlation ID, maintenance gateway, and rate limiting middlewares.
  */
 function setupSecurity(app) {
+  app.use(requestId);
+  app.use(maintenanceMiddleware);
   app.use(helmetConfig);
   app.use(cors(corsConfig));
   app.use(rateLimiter);
@@ -88,8 +91,8 @@ function setupRoutes(app) {
  * Wire all middlewares into Express app.
  */
 function setupMiddleware(app) {
-  setupRequestLogging(app);
   setupSecurity(app);
+  setupRequestLogging(app);
   setupBodyParsers(app);
   setupRoutes(app);
 }
@@ -102,7 +105,7 @@ async function initializeDatabase() {
 }
 
 /**
- * Starts HTTP listener.
+ * Starts HTTP listener and initializes background services.
  */
 async function startHttpServer(server) {
   return new Promise((resolve, reject) => {
@@ -110,6 +113,7 @@ async function startHttpServer(server) {
       try {
         await startServer(server, PORT);
         await initializeDatabase();
+        initCron();
         resolve();
       } catch (error) {
         reject(error);
@@ -130,11 +134,14 @@ async function startApplication() {
 
   /*
    * GRACEFUL SHUTDOWN HANDLERS
-   * Traps SIGTERM and SIGINT signals to safely close connections and pools.
+   * Traps SIGTERM and SIGINT signals to safely close connections, cron jobs, and pools.
    */
   const shutdown = async (signal) => {
     console.log(`\n🛑 [Server] Received ${signal}. Shutting down gracefully...`);
+    stopCron();
+
     server.close(async () => {
+      await closeRedis();
       if (sequelize) {
         await sequelize.close();
         console.log("🔒 [Database] Connection pool closed.");

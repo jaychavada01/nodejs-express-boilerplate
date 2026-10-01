@@ -1,4 +1,4 @@
-const sgMail = require("@sendgrid/mail");
+const { SENDGRID_MAIL: sgMail } = require("./packages");
 const envConfig = require("./envConfig");
 
 let isSendGridConfigured = false;

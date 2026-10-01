@@ -1,4 +1,4 @@
-const rateLimit = require("express-rate-limit");
+const { RATE_LIMIT: rateLimit } = require("../../config/packages");
 const envConfig = require("../../config/envConfig");
 const { BAD_REQUEST_RESPONSE } = require("../utils/response");
 

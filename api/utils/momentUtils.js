@@ -1,4 +1,4 @@
-const moment = require("moment");
+const { MOMENT: moment } = require("../../config/packages");
 
 /**
  * @name GET_CURRENT_TIMESTAMP

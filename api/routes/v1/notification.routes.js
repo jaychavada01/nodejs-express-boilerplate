@@ -1,4 +1,4 @@
-const express = require("express");
+const { EXPRESS: express } = require("../../../config/packages");
 const router = express.Router();
 const NotificationDemoController = require("../../controllers/v1/NotificationDemoController");
 

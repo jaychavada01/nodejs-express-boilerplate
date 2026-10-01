@@ -1,6 +1,4 @@
-const fs = require("fs");
-const path = require("path");
-const handlebars = require("handlebars");
+const { FS: fs, PATH: path, HANDLEBARS: handlebars } = require("../../../config/packages");
 const { sgMail, isSendGridConfigured, defaultFrom } = require("../../../config/sendgrid");
 
 const templateCache = new Map();

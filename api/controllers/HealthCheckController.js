@@ -2,6 +2,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const { OK_RESPONSE } = require("../utils/response");
 const { sequelize } = require("../../config/sequelize");
 const { isRabbitMQConnected } = require("../../config/rabbitmq");
+const { isRedisConnected } = require("../../config/redis");
 const { isFCMReady } = require("../../config/firebase");
 const { isSendGridConfigured } = require("../../config/sendgrid");
 
@@ -31,6 +32,7 @@ const healthCheck = asyncHandler(async (req, res) => {
     timestamp: new Date().toISOString(),
     services: {
       database: dbStatus,
+      redis: isRedisConnected() ? "connected" : "mock_or_offline",
       rabbitmq: isRabbitMQConnected() ? "connected" : "disabled_or_offline",
       firebase: isFCMReady() ? "ready" : "mock_mode",
       sendgrid: isSendGridConfigured() ? "ready" : "mock_mode",

@@ -1,6 +1,6 @@
 const { Sample } = require("../../models");
 const { getPagingData } = require("../helpers/pagination");
-const { v4: uuidv4 } = require("uuid");
+const { UUIDV4: uuidv4 } = require("../../config/packages");
 const { PAGINATION, STATUS_TYPES } = require("../../config/constants");
 const { GET_CURRENT_TIMESTAMP } = require("../utils/momentUtils");
 

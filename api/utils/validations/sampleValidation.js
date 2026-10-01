@@ -1,6 +1,4 @@
-"use strict";
-
-const Joi = require("joi");
+const { JOI: Joi } = require("../../../config/packages");
 
 const createSampleSchema = Joi.object({
   title: Joi.string().trim().min(3).max(100).required(),

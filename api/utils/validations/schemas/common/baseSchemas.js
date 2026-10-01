@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const { JOI: Joi } = require("../../../../../config/packages");
 
 const numberSchema = Joi.number();
 const stringSchema = Joi.string().trim();

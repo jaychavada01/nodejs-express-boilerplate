@@ -1,4 +1,4 @@
-const admin = require("firebase-admin");
+const { FIREBASE_ADMIN: admin } = require("./packages");
 const envConfig = require("./envConfig");
 
 let isFCMReady = false;

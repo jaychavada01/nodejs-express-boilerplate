@@ -1,4 +1,4 @@
-const amqp = require("amqplib");
+const { AMQPLIB: amqp } = require("./packages");
 const envConfig = require("./envConfig");
 const { QUEUE_NAMES, EXCHANGES, DLQ_NAMES } = require("./constants");
 

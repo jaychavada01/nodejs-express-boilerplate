@@ -28,6 +28,30 @@ const ERROR_MESSAGES = {
   NOTIF005: "Message published to queue successfully",
   NOTIF006: "Failed to publish message to queue",
   NOTIF007: "Target device token is missing or invalid",
+
+  // ── Maintenance & System Availability ────────────────────────────────────
+  ERR503: "Service Unavailable: Application is under maintenance",
+  ERR429: "Too many requests, please try again later",
+  MAINT001: "Application is currently under maintenance. Please try again later.",
+
+  // ── File & Media Operations ──────────────────────────────────────────────
+  FILE001: "File is required but was not provided",
+  FILE002: "File type is not supported",
+  FILE003: "File size exceeds allowed limit",
+  FILE004: "File uploaded successfully",
+  FILE005: "File deleted successfully",
+
+  // ── Excel & Spreadsheet Operations ───────────────────────────────────────
+  EXCEL001: "Excel spreadsheet generated successfully",
+  EXCEL002: "Failed to parse spreadsheet file",
+  EXCEL003: "Spreadsheet file parsed successfully",
+
+  // ── Cryptography & Security ──────────────────────────────────────────────
+  CRYPTO001: "Cryptographic signature verification failed",
+  CRYPTO002: "Data decryption failed",
+
+  // ── Cache & Redis Operations ─────────────────────────────────────────────
+  CACHE001: "Cache cleared successfully",
 };
 
 module.exports = ERROR_MESSAGES;

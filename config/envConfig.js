@@ -1,4 +1,5 @@
-require("dotenv").config({ quiet: true });
+const { DOTENV } = require("./packages");
+DOTENV.config({ quiet: true });
 
 const envConfig = {
   PORT: process.env.PORT || 3000,
@@ -52,6 +53,42 @@ const envConfig = {
     USERNAME: process.env.RABBITMQ_USERNAME || "guest",
     PASSWORD: process.env.RABBITMQ_PASSWORD || "guest",
     VHOST: process.env.RABBITMQ_VHOST || "/",
+  },
+
+  REDIS: {
+    ENABLE: process.env.ENABLE_REDIS || "N",
+    URL: process.env.REDIS_URL || "",
+    HOST: process.env.REDIS_HOST || "localhost",
+    PORT: Number(process.env.REDIS_PORT) || 6379,
+    PASSWORD: process.env.REDIS_PASSWORD || "",
+    DB: Number(process.env.REDIS_DB) || 0,
+  },
+
+  CRON: {
+    ENABLE: process.env.ENABLE_CRON || "N",
+  },
+
+  MAINTENANCE: {
+    ENABLE: process.env.MAINTENANCE_MODE || "N",
+    BYPASS_SECRET: process.env.MAINTENANCE_BYPASS_SECRET || "",
+    ALLOWED_IPS: (process.env.MAINTENANCE_ALLOWED_IPS || "")
+      .split(",")
+      .map((ip) => ip.trim())
+      .filter(Boolean),
+  },
+
+  AWS_S3: {
+    ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || "",
+    SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || "",
+    REGION: process.env.AWS_REGION || "us-east-1",
+    BUCKET_NAME: process.env.AWS_S3_BUCKET_NAME || "",
+    ENDPOINT: process.env.AWS_S3_ENDPOINT || "",
+    FORCE_PATH_STYLE: process.env.AWS_S3_FORCE_PATH_STYLE === "true",
+    CUSTOM_DOMAIN: process.env.AWS_S3_CUSTOM_DOMAIN || "",
+  },
+
+  ENCRYPTION: {
+    SECRET_KEY: process.env.ENCRYPTION_KEY || "12345678901234567890123456789012", // 32 characters key for aes-256
   },
 };
 

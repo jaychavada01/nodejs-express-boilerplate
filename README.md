@@ -50,18 +50,21 @@ nodejs-express-boilerplate/
 ├── package.json                    # Dependencies & scripts
 ├── app.js                          # Main application entry point & lifecycle
 ├── config/
+│   ├── packages.js                 # Centralized registry for all third-party & built-in packages
 │   ├── envConfig.js                # Centralized environment variable validator
 │   ├── constants/
-│   │   ├── index.js                # System constants (roles, notification events, languages)
+│   │   ├── index.js                # System constants (roles, notification events, storage, cron, crypto)
 │   │   └── statusCodes.js          # HTTP Status Code constants
 │   ├── models.js                   # Default model attributes (id, is_active, created_at, is_deleted, etc.)
 │   ├── pushMessages.js             # Push notification multi-language template catalog
 │   ├── apiErrorCode.js             # Coded error and response message catalog
 │   ├── database.js                 # Database authentication & healthcheck
 │   ├── sequelize.js                # Sequelize ORM instance & connection pool (via DB_URL)
+│   ├── redis.js                    # Redis connection manager (caching & blacklist)
+│   ├── cron.js                     # Background task & cron scheduler loader
 │   ├── security.js                 # Helmet and CORS configuration
 │   ├── rabbitmq.js                 # RabbitMQ connection manager & topology setup
-│   ├── firebase.js                 # Firebase Admin / FCM initializer
+│   ├── firebase.js                 # Firebase Admin / FCM initializer (Option 2)
 │   ├── sendgrid.js                 # SendGrid mail client initializer
 │   ├── bootstrap.js                # Background worker & subscriber bootloader
 │   └── routes.js                   # Root router loader
@@ -79,17 +82,28 @@ nodejs-express-boilerplate/
 │   │       ├── sample.routes.js    # Sample CRUD routes (/list, /view, /create, /update, /delete)
 │   │       └── notification.routes.js # Notification test routes
 │   ├── middlewares/
+│   │   ├── requestId.js            # X-Request-Id UUID injection & propagation
+│   │   ├── maintenance.js          # Maintenance mode gateway (503 Service Unavailable)
+│   │   ├── upload.js               # Multer file upload filters (images, videos, documents, media)
+│   │   ├── cacheMiddleware.js      # Route-level Redis response caching
 │   │   ├── errorHandler.js         # Centralized error handler with coded errors
 │   │   └── rateLimiter.js          # Express rate limiting
 │   ├── policies/
-│   │   ├── isAuth.js               # JWT bearer token verification
+│   │   ├── isAuth.js               # JWT bearer token & revocation verification
 │   │   └── isAdmin.js              # Admin role authorization
 │   ├── services/
 │   │   └── SampleService.js        # Business logic layer (Direct Arrow Functions)
 │   ├── subscribers/
 │   │   ├── index.js                # Subscriber registry
 │   │   └── sampleSubscriber.js     # RabbitMQ worker example
+│   ├── tasks/
+│   │   ├── index.js                # Cron task registry
+│   │   └── sampleCleanupTask.js    # Sample scheduled background job
 │   ├── helpers/
+│   │   ├── s3Helper.js             # AWS S3 upload, pre-signed URLs, delete & public CDN URL resolver
+│   │   ├── cryptoHelper.js         # Passwords (bcrypt), OTP, HMAC signatures, AES encryption
+│   │   ├── excelHelper.js          # XLSX / CSV export and parsing (xlsx package)
+│   │   ├── redisHelper.js          # Redis cache get/set/del & JWT token blacklist
 │   │   ├── mail/
 │   │   │   └── emailService.js     # SendGrid + Handlebars email helper
 │   │   ├── push/

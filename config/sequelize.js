@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const { Sequelize } = require("./packages");
 const envConfig = require("./envConfig");
 
 let sequelize = null;

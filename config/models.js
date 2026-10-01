@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes } = require("./packages");
 const { GET_CURRENT_TIMESTAMP } = require("../api/utils/momentUtils");
 
 module.exports.models = {
