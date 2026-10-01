@@ -58,11 +58,10 @@ nodejs-express-boilerplate/
 │   ├── pushMessages.js             # Push notification multi-language template catalog
 │   ├── apiErrorCode.js             # Coded error and response message catalog
 │   ├── database.js                 # Database authentication & healthcheck
-│   ├── datastores.js               # Database connection parameters
-│   ├── sequelize.js                # Sequelize ORM instance & connection pool
+│   ├── sequelize.js                # Sequelize ORM instance & connection pool (via DB_URL)
 │   ├── security.js                 # Helmet and CORS configuration
 │   ├── rabbitmq.js                 # RabbitMQ connection manager & topology setup
-│   ├── firebase.js                 # Firebase Admin / FCM multi-strategy initializer
+│   ├── firebase.js                 # Firebase Admin / FCM initializer
 │   ├── sendgrid.js                 # SendGrid mail client initializer
 │   ├── bootstrap.js                # Background worker & subscriber bootloader
 │   └── routes.js                   # Root router loader

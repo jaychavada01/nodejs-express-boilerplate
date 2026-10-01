@@ -1,37 +1,26 @@
 const { Sequelize } = require("sequelize");
-const datastores = require("./datastores");
+const envConfig = require("./envConfig");
 
 let sequelize = null;
 
 /*
  * DATABASE ORM INSTANCE INITIALIZATION
- * Configures Sequelize with PostgreSQL dialect, connection pooling,
- * and suppresses noisy raw query logs during runtime.
+ * Configures Sequelize with PostgreSQL dialect and connection pooling directly from DB_URL.
+ * Suppresses noisy raw query logs during runtime.
  */
-if (datastores.url || (datastores.adapter && datastores.database)) {
+if (envConfig.DATABASE && envConfig.DATABASE.URL) {
   const connectionOptions = {
-    dialect: datastores.adapter || "postgres",
+    dialect: "postgres",
     logging: false,
     pool: {
-      max: datastores.pool.MAX || 20,
-      min: datastores.pool.MIN || 0,
-      acquire: datastores.pool.ACQUIRE || 30000,
-      idle: datastores.pool.IDLE || 10000,
+      max: envConfig.DATABASE.POOL.MAX || 20,
+      min: envConfig.DATABASE.POOL.MIN || 0,
+      acquire: envConfig.DATABASE.POOL.ACQUIRE || 30000,
+      idle: envConfig.DATABASE.POOL.IDLE || 10000,
     },
   };
 
-  sequelize = datastores.url
-    ? new Sequelize(datastores.url, connectionOptions)
-    : new Sequelize(
-        datastores.database,
-        datastores.username,
-        datastores.password,
-        {
-          host: datastores.host,
-          port: datastores.port,
-          ...connectionOptions,
-        }
-      );
+  sequelize = new Sequelize(envConfig.DATABASE.URL, connectionOptions);
 }
 
 module.exports = { sequelize };

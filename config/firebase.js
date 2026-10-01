@@ -1,16 +1,12 @@
 const admin = require("firebase-admin");
-const fs = require("fs");
-const path = require("path");
 const envConfig = require("./envConfig");
 
 let isFCMReady = false;
 
-/*
- * MULTI-STRATEGY FIREBASE INITIALIZATION
- * Strategy 1: Service Account JSON File Path (FIREBASE_SERVICE_ACCOUNT_PATH)
- * Strategy 2: Raw JSON String in Env (FIREBASE_SERVICE_ACCOUNT_JSON)
- * Strategy 3: Individual Env Variables (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY)
- * Fallback: Graceful Mock Mode for local offline development
+/**
+ * @name initFirebase
+ * @description Initializes Firebase Admin SDK using individual environment credentials (Option 2)
+ * @returns {Object} Firebase Admin SDK instance
  */
 const initFirebase = () => {
   try {
@@ -19,45 +15,35 @@ const initFirebase = () => {
       return admin;
     }
 
-    const { SERVICE_ACCOUNT_PATH, SERVICE_ACCOUNT_JSON, PROJECT_ID, CLIENT_EMAIL, PRIVATE_KEY } =
-      envConfig.FIREBASE;
+    const {
+      PROJECT_ID,
+      PRIVATE_KEY_ID,
+      PRIVATE_KEY,
+      CLIENT_EMAIL,
+      CLIENT_ID,
+      CLIENT_X509_CERT_URL,
+    } = envConfig.FIREBASE;
 
-    // Strategy 1: JSON File Path
-    if (SERVICE_ACCOUNT_PATH && fs.existsSync(path.resolve(SERVICE_ACCOUNT_PATH))) {
-      const serviceAccount = JSON.parse(
-        fs.readFileSync(path.resolve(SERVICE_ACCOUNT_PATH), "utf8")
-      );
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        projectId: PROJECT_ID || serviceAccount.project_id,
-      });
-      isFCMReady = true;
-      console.log("✅ [Firebase Admin] Initialized from service account file.");
-      return admin;
-    }
-
-    // Strategy 2: Raw JSON String
-    if (SERVICE_ACCOUNT_JSON) {
-      const serviceAccount = JSON.parse(SERVICE_ACCOUNT_JSON);
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        projectId: PROJECT_ID || serviceAccount.project_id,
-      });
-      isFCMReady = true;
-      console.log("✅ [Firebase Admin] Initialized from raw JSON env string.");
-      return admin;
-    }
-
-    // Strategy 3: Individual Env Vars
+    /*
+     * FIREBASE CREDENTIAL INITIALIZATION
+     * Initializes Admin SDK with individual service account credential properties.
+     * Fallback to graceful mock mode when credentials are not configured.
+     */
     if (PROJECT_ID && CLIENT_EMAIL && PRIVATE_KEY) {
+      const serviceAccount = {
+        projectId: PROJECT_ID,
+        clientEmail: CLIENT_EMAIL,
+        privateKey: PRIVATE_KEY,
+        ...(PRIVATE_KEY_ID && { privateKeyId: PRIVATE_KEY_ID }),
+        ...(CLIENT_ID && { clientId: CLIENT_ID }),
+        ...(CLIENT_X509_CERT_URL && { clientX509CertUrl: CLIENT_X509_CERT_URL }),
+      };
+
       admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId: PROJECT_ID,
-          clientEmail: CLIENT_EMAIL,
-          privateKey: PRIVATE_KEY,
-        }),
+        credential: admin.credential.cert(serviceAccount),
         projectId: PROJECT_ID,
       });
+
       isFCMReady = true;
       console.log("✅ [Firebase Admin] Initialized from individual environment variables.");
       return admin;
@@ -68,6 +54,7 @@ const initFirebase = () => {
     console.error("❌ [Firebase Admin] Initialization failed:", error.message);
     isFCMReady = false;
   }
+
   return admin;
 };
 

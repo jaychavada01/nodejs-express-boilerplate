@@ -7,13 +7,7 @@ const envConfig = {
   FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:3000",
 
   DATABASE: {
-    ADAPTER: process.env.DB_ADAPTER || "postgres",
     URL: process.env.DB_URL || "postgres://postgres:postgres@localhost:5432/swp_boilerplate_db",
-    HOST: process.env.DB_HOST || "localhost",
-    PORT: process.env.DB_PORT || 5432,
-    NAME: process.env.DB_NAME || "swp_boilerplate_db",
-    USER: process.env.DB_USER || "postgres",
-    PASSWORD: process.env.DB_PASSWORD || "postgres",
     POOL: {
       MAX: Number(process.env.DB_POOL_MAX) || 20,
       MIN: Number(process.env.DB_POOL_MIN) || 0,
@@ -40,13 +34,14 @@ const envConfig = {
   },
 
   FIREBASE: {
-    SERVICE_ACCOUNT_PATH: process.env.FIREBASE_SERVICE_ACCOUNT_PATH || "",
-    SERVICE_ACCOUNT_JSON: process.env.FIREBASE_SERVICE_ACCOUNT_JSON || "",
     PROJECT_ID: process.env.FIREBASE_PROJECT_ID || "",
-    CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL || "",
+    PRIVATE_KEY_ID: process.env.FIREBASE_PRIVATE_KEY_ID || "",
     PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY
       ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
       : "",
+    CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL || "",
+    CLIENT_ID: process.env.FIREBASE_CLIENT_ID || "",
+    CLIENT_X509_CERT_URL: process.env.FIREBASE_CLIENT_X509_CERT_URL || "",
   },
 
   RABBITMQ: {
