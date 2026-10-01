@@ -15,23 +15,47 @@ All development in this repository MUST strictly follow the conventions document
 
 ## 🚀 Key Features & Capabilities
 
-- **Standardized Response Architecture**: All endpoints adhere to a uniform response envelope (`{ status, message, data, error }`) powered by direct uppercase helper functions (`OK_RESPONSE`, `CREATED_RESPONSE`, `BAD_REQUEST_RESPONSE`, `NOT_FOUND_RESPONSE`, `SERVER_ERROR_RESPONSE`, etc.).
-- **Centralized Message & Error Catalog**: Clean error and response code dictionary (`config/apiErrorCode.js`) eliminating hardcoded strings.
-- **Sequelize ORM & Model Management**: Shared model attributes (`models.defaultAttributes`) providing consistent timestamps, UUIDs, soft deletes (`is_deleted`), and active flags (`is_active`).
-- **In-Controller Joi Validations**: Input validation performed directly at the entry point of controller handlers using dedicated schema files.
-- **Picture-Perfect Push Notifications (FCM)**:
-  - Multi-platform push service supporting **iOS (APNs headers & badge)**, **Android (high-priority channels)**, and **WebPush**.
-  - Multi-language template catalog (`config/pushMessages.js`) with dynamic `{{placeholder}}` token replacement.
-  - Multi-strategy Firebase initialization (Service Account JSON file, individual env variables, or raw JSON string).
-- **Picture-Perfect RabbitMQ Messaging**:
-  - Connection singleton with auto-reconnect and complete topology assertion (Main Queues, Fanout Exchanges, and Dead-Letter Queues).
+- **📦 Centralized Package Registry (`config/packages.js`)**: All third-party npm libraries and Node.js built-in modules are imported once in a single registry and exported as capitalized identifiers (`EXPRESS`, `JOI`, `JWT`, `SEQUELIZE`, `REDIS`, `CRON`, `XLSX`, `MULTER`, `AWS_S3`, `MOMENT`, `BCRYPT`, etc.) to enforce strict consistency across the codebase.
+- **✨ Standardized Response Architecture**: All API endpoints return a uniform response envelope (`{ status, message, data, error }`) using named helper functions (`OK_RESPONSE`, `CREATED_RESPONSE`, `BAD_REQUEST_RESPONSE`, `NOT_FOUND_RESPONSE`, `SERVER_ERROR_RESPONSE`, etc.).
+- **📋 Centralized Error & Message Catalog (`config/apiErrorCode.js`)**: Domain-specific coded messages (e.g. `VAL001`, `AUTH001`, `FILE001`, `ERR500`) eliminating hardcoded strings across handlers.
+- **🗄️ Sequelize ORM via DB_URL**: Direct PostgreSQL connection via `DB_URL` with connection pooling, shared model attributes (`models.defaultAttributes` with UUIDs, timestamps, active flags, soft-deletes `is_deleted`), and manual standalone SQL scripts (`migration.sql`).
+- **🛡️ In-Controller Joi Schema Validations**: Declarative input validation at the top of controller handlers, featuring reusable pagination schemas (`skipLimitSearchingSchema`).
+- **☁️ AWS S3 Cloud Storage & Multer Uploads (`api/helpers/s3Helper.js`, `api/middlewares/upload.js`)**:
+  - Memory-buffered Multer middlewares with MIME type & size filters for **Images** (10MB), **Videos** (100MB), **Documents** (25MB), **Spreadsheets**, and **Multi-Media**.
+  - Direct S3 uploads with UUID collision protection.
+  - **Pre-signed Upload URLs** (direct client/mobile-to-S3 PUT) and **Pre-signed Download URLs** (time-limited GET for private files).
+  - Compatible with AWS S3, Cloudflare R2, MinIO, and LocalStack via custom endpoints.
+- **📊 Excel & CSV Utilities via `xlsx` (`api/helpers/excelHelper.js`)**:
+  - In-memory `.xlsx` workbook buffer generation from JSON arrays.
+  - In-memory `.csv` buffer generation from JSON arrays.
+  - Parsing uploaded spreadsheet buffers (`.xlsx`, `.xls`, `.csv`) into structured JSON row objects.
+- **🔐 Cryptography, Passwords & Auth Helper (`api/helpers/cryptoHelper.js`)**:
+  - Password hashing and verification via `bcryptjs`.
+  - Cryptographically secure numeric OTPs and random hexadecimal tokens.
+  - Timing-safe HMAC webhook signature generation & verification.
+  - Authenticated symmetric AES-256-GCM data encryption and decryption.
+- **⚡ Redis Manager, Caching & Token Blacklisting (`config/redis.js`, `api/helpers/redisHelper.js`)**:
+  - Explicit env-flag (`ENABLE_REDIS=Y`) controlled connection with exponential backoff and safe mock fallback.
+  - Route-level GET response caching middleware (`cacheMiddleware`).
+  - Instant JWT token revocation / blacklist verification integrated into `isAuth` policy.
+- **⏰ Scheduled Tasks / Cron Runner (`config/cron.js`, `api/tasks/`)**:
+  - Explicit env-flag (`ENABLE_CRON=Y`) controlled recurring task runner powered by `node-cron`.
+  - Modular task registry with automatic start and graceful shutdown on SIGTERM/SIGINT.
+- **🚧 Maintenance Mode Gateway (`api/middlewares/maintenance.js`)**:
+  - Explicit env-flag (`MAINTENANCE_MODE=Y`) controlled gateway returning `503 Service Unavailable`.
+  - Built-in bypass support for `/health`, secret bypass header (`x-maintenance-bypass`), and IP allowlisting.
+- **🔍 Request Correlation ID (`X-Request-Id`)**: Unique UUID injection & propagation across headers and ANSI color-coded console logs for distributed request tracing.
+- **📲 Picture-Perfect Push Notifications (FCM)**:
+  - Multi-platform push service for **iOS (APNs headers & badge)**, **Android (notification channels)**, and **WebPush**.
+  - Multi-language template catalog (`config/pushMessages.js`) with dynamic `{{placeholder}}` token substitution.
+  - Initialized strictly via individual service account credentials (Option 2).
+- **🐇 Picture-Perfect RabbitMQ Messaging (`config/rabbitmq.js`, `api/helpers/queue/`)**:
+  - Connection manager with complete topology assertion (Queues, Exchanges, Dead-Letter Queues).
   - Durable message publisher and resilient consumer with **automatic exponential-backoff retries** (`2s, 4s, 8s...`) and DLQ routing.
-- **Picture-Perfect SendGrid Email Service**:
-  - Outbound email delivery with support for HTML, text, and pre-compiled **Handlebars** templates from `assets/templates/email/`.
-  - Detailed unwrapping of SendGrid API error payloads for instant debugging.
-- **Async Handling & Global Error Middleware**: Promise-based `asyncHandler` eliminating repetitive `try/catch` boilerplate, with safe error masking in production.
-- **Standalone Migrations**: Manual PostgreSQL migration scripts (`migration.sql`) avoiding dangerous automatic schema migrations.
-- **Security & Logging**: Helmet security headers, configurable CORS, rate limiting, and ANSI color-coded request/latency logging.
+- **📧 Picture-Perfect SendGrid Email Service (`config/sendgrid.js`, `api/helpers/mail/`)**:
+  - Outbound email delivery with pre-compiled **Handlebars** HTML templates from `assets/templates/email/`.
+  - Automatic error unwrapping from SendGrid API responses for instant debugging.
+- **🔒 Security & Resilience**: Helmet HTTP security headers, CORS, rate limiting (`express-rate-limit`), promise-based `asyncHandler`, and graceful shutdown lifecycle hooks.
 
 ---
 
